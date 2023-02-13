@@ -1,6 +1,8 @@
 import { useState } from 'react'
 
 const App = () => {
+  const [points, setPoints] = useState(new Uint8Array(8));
+  const [mostVotes, setMostVotes] = useState(0)
   const anecdotes = [
     'If it hurts, do it more often.',
     'Adding manpower to a late software project makes it later!',
@@ -17,15 +19,31 @@ const App = () => {
     console.log(rand)
     setSelected(rand)
   }
+
+  const vote = () => {    
+    // increment the value in position 2 by one
+    const copy = [...points]
+    copy[selected] += 1
+    setPoints(copy)
+    console.log(copy)
+    const mostVoted = copy.indexOf(Math.max(...copy))
+    console.log(mostVoted)
+    setMostVotes(mostVoted)
+  }
    
   const [selected, setSelected] = useState(0)
 
   return (
     <div>
+      <h1>Anecdote of the day</h1>
       {anecdotes[selected]}  
       <br/>    
       <button onClick={getAnecdote}>Next Random Anecdote</button>
-    </div>
+      <button onClick={vote}>Vote Anecdote</button>
+      <h1>Anecdote with most Votes</h1>
+      {anecdotes[mostVotes]}  
+    <br/>
+  </div>
   )
 }
 
