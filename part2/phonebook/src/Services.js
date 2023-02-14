@@ -13,8 +13,13 @@ const update = (name, phone, id) => {
   return axios.put(`${baseUrl}/${id}`, {name: name, number:phone, id:id})
 }
 
+const deleteUser = id => {
+  return axios.delete(`${baseUrl}/${id}`)
+}
+
 export default { 
   getAll, 
   create, 
-  update 
+  update,
+  deleteUser
 }

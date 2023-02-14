@@ -23,28 +23,12 @@ const App = () => {
       if(persons.find(e => e.name ===  newName)){
         alert(`${newName} is already added to phonebook`)
       } else {
-        let id = 0
-        Services.getAll()
-          .then(all => {
-            console.log(all)
-            setPTS(all.data)
-            id = all.data.length + 1
-          })
-          .catch(error => {
-            console.log('fail')
-          })
+        let id = updatePTS()
           Services.create({name: newName, number:phone, id:id})
-            .then( res => {
-                Services.getAll()
-              .then(all => {
-                console.log(all)
-                setPTS(all.data)
-                id = all.data.length + 1
+          .then( res => {
+                id = updatePTS()
               })
-              .catch(error => {
-                console.log('fail')
-              })
-          } ).catch(error => {
+          .catch(error => {
             console.log('fail')
           })
         setPersons(persons.concat({id:id, name: newName, number: phone}))
@@ -56,6 +40,17 @@ const App = () => {
     // console.log('button clicked', event.target)
   }
 
+  const updatePTS = () =>{
+    Services.getAll()
+          .then(all => {
+            console.log(all)
+            setPTS(all.data)
+            return all.data.length + 1
+          })
+          .catch(error => {
+            console.log('fail')
+          })
+  }
   const handleNameChange = (event) => {
     setNewName(event.target.value)
   }
@@ -65,8 +60,24 @@ const App = () => {
   }
 
   const handleFilterChange = (event) => {
-    setPTS(persons.filter(person => person.name.toLowerCase().includes(event.target.value.toLowerCase())))
+    Services.getAll()
+          .then(all => {
+            console.log(all)
+            let p = all.data
+            setPTS(p.filter(person => person.name.toLowerCase().includes(event.target.value.toLowerCase())))
+            return all.data.length + 1
+          })
+          .catch(error => {
+            console.log('fail')
+          })
   }
+  
+  const DeleteUser = (id, name) => {
+    if (window.confirm(`Delete ${name}?`)) {
+      Services.deleteUser(id)
+      .then(e => {updatePTS()})
+    }
+  } 
 
   return (
     <div>
@@ -75,7 +86,7 @@ const App = () => {
       <h2>add a new</h2>
       <PersonForm addName={addName} newName={newName} handleNameChange={handleNameChange} phone={phone} handlePhoneChange={handlePhoneChange}/>
       <h2>Numbers</h2>
-      <Persons personsToShow={personsToShow}/>
+      <Persons personsToShow={personsToShow} DeleteUser={DeleteUser}/>
     </div>
   )
 }
