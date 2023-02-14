@@ -23,18 +23,34 @@ const App = () => {
       if(persons.find(e => e.name ===  newName)){
         alert(`${newName} is already added to phonebook`)
       } else {
-        Services.create({name: newName, number:phone, id:persons.length+1})
-        setPersons(persons.concat({id:persons.length+1, name: newName, number: phone}))
-        setNewName("")
-        setPhone("")
+        let id = 0
         Services.getAll()
           .then(all => {
             console.log(all)
             setPTS(all.data)
+            id = all.data.length + 1
           })
           .catch(error => {
             console.log('fail')
           })
+          Services.create({name: newName, number:phone, id:id})
+            .then( res => {
+                Services.getAll()
+              .then(all => {
+                console.log(all)
+                setPTS(all.data)
+                id = all.data.length + 1
+              })
+              .catch(error => {
+                console.log('fail')
+              })
+          } ).catch(error => {
+            console.log('fail')
+          })
+        setPersons(persons.concat({id:id, name: newName, number: phone}))
+        setNewName("")
+        setPhone("")
+        
       }
     }
     // console.log('button clicked', event.target)
