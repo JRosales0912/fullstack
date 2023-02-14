@@ -1,4 +1,7 @@
 import { useState } from 'react'
+import Filter from './Filter'
+import PersonForm from './PersonForm'
+import Persons from './Persons'
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -19,9 +22,10 @@ const App = () => {
       if(persons.find(e => e.name ===  newName)){
         alert(`${newName} is already added to phonebook`)
       } else {
-        setPersons(persons.concat({name: newName, number: phone}))
+        setPersons(persons.concat({id:persons.length+1, name: newName, number: phone}))
         setNewName("")
         setPhone("")
+        setPTS(persons.concat({id:persons.length+1, name: newName, number: phone}))
       }
     }
     // console.log('button clicked', event.target)
@@ -42,32 +46,11 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-        <div>
-          filter shown with: <input
-            onChange={handleFilterChange}/>
-        </div>
-        
+      <Filter handleFilterChange={handleFilterChange}/>
       <h2>add a new</h2>
-      <form onSubmit={addName}>
-        <div>
-          name: <input value={newName} 
-            onChange={handleNameChange}/>
-        </div>
-        <div>
-          number: <input value={phone} 
-            onChange={handlePhoneChange}/>
-        </div>
-        <div>
-          <button type="submit" >add</button>
-        </div>
-      </form>
+      <PersonForm addName={addName} newName={newName} handleNameChange={handleNameChange} phone={phone} handlePhoneChange={handlePhoneChange}/>
       <h2>Numbers</h2>
-      <ul>
-        {personsToShow.map(person =>
-          <li key={person.name}>
-              {person.name} {person.number}
-          </li>)}
-      </ul>
+      <Persons personsToShow={personsToShow}/>
     </div>
   )
 }
