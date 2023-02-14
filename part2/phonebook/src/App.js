@@ -2,6 +2,7 @@ import { useState } from 'react'
 import Filter from './Filter'
 import PersonForm from './PersonForm'
 import Persons from './Persons'
+import Services from './Services'
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -22,10 +23,18 @@ const App = () => {
       if(persons.find(e => e.name ===  newName)){
         alert(`${newName} is already added to phonebook`)
       } else {
+        Services.create({name: newName, number:phone, id:persons.length+1})
         setPersons(persons.concat({id:persons.length+1, name: newName, number: phone}))
         setNewName("")
         setPhone("")
-        setPTS(persons.concat({id:persons.length+1, name: newName, number: phone}))
+        Services.getAll()
+          .then(all => {
+            console.log(all)
+            setPTS(all.data)
+          })
+          .catch(error => {
+            console.log('fail')
+          })
       }
     }
     // console.log('button clicked', event.target)
