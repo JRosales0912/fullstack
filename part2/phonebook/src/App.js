@@ -61,7 +61,7 @@ const App = () => {
     let id = -1;
     if(newName!==""){
       let found = personsToShow.find(e => e.name ===  newName)
-      if(found && found != -1){
+      if(found && found !== -1){
         console.log(found)
         if(window.confirm(`${found.name} is already added to phonebook, replace the old number with a new one?`)){
           id = updatePTS()
