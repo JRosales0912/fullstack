@@ -16,6 +16,7 @@ const Course = ({course}) => {
         const ex = props.parts.reduce(function(previousValue, currentValue) {
             return { exercises: previousValue.exercises + currentValue.exercises }
         });
+      //reduce already added  
       return(<p>Number of exercises {ex.exercises}</p>)
     }
     const Content = (props) => {
