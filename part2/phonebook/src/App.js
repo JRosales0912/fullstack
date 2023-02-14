@@ -19,9 +19,21 @@ const App = () => {
   
   const addName = (event) => {
     event.preventDefault()
+    let id = -1;
     if(newName!==""){
-      if(persons.find(e => e.name ===  newName)){
-        alert(`${newName} is already added to phonebook`)
+      let found = personsToShow.find(e => e.name ===  newName)
+      if(found != -1){
+        if(window.confirm(`${found.name} is already added to phonebook, replace the old number with a new one?`)){
+          id = updatePTS()
+          Services.update(found.name, phone, found.id)
+          .then( res => {
+                id = updatePTS()
+              })
+          .catch(error => {
+            console.log(error)
+            console.log('fail')
+          })
+        }
       } else {
         let id = updatePTS()
           Services.create({name: newName, number:phone, id:id})
@@ -30,12 +42,11 @@ const App = () => {
               })
           .catch(error => {
             console.log('fail')
-          })
-        setPersons(persons.concat({id:id, name: newName, number: phone}))
-        setNewName("")
-        setPhone("")
-        
-      }
+          }) 
+      }      
+      setPersons(persons.concat({id:id, name: newName, number: phone}))
+      setNewName("")
+      setPhone("")
     }
     // console.log('button clicked', event.target)
   }
