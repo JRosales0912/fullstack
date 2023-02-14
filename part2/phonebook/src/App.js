@@ -17,6 +17,18 @@ const Notification = ({ message }) => {
   )
 }
 
+const Error = ({ message }) => {
+  if (message === null) {
+    return null
+  }
+
+  return (
+    <div className='error'>
+      {message}
+    </div>
+  )
+}
+
 const App = () => {
   const [persons, setPersons] = useState([
     { name: 'Arto Hellas', number: '040-123456', id: 1 },
@@ -29,6 +41,7 @@ const App = () => {
   const [phone, setPhone] = useState('')
   
   const [notification, setNotification] = useState(null)
+  const [error, setError] = useState(null)
 
   const [personsToShow, setPTS] = useState(persons)
   
@@ -36,6 +49,11 @@ const App = () => {
   const showNotification = (name) => {
     setNotification(`Added ${name}`)
     setTimeout(() => {setNotification(null)}, 5000)
+  }
+
+  const showError = (name) => {
+    setError(`Information of ${name} has already been removed from server`)
+    setTimeout(() => {setError(null)}, 5000)
   }
 
   const addName = (event) => {
@@ -54,7 +72,7 @@ const App = () => {
               })
           .catch(error => {
             console.log(error)
-            console.log('fail')
+            showError(found.name)
           })
         }
       } else {
@@ -118,6 +136,7 @@ const App = () => {
     <div>
       <h2>Phonebook</h2>
       <Notification message={notification}/>
+      <Error message={error}/>
       <Filter handleFilterChange={handleFilterChange}/>
       <h2>add a new</h2>
       <PersonForm addName={addName} newName={newName} handleNameChange={handleNameChange} phone={phone} handlePhoneChange={handlePhoneChange}/>
