@@ -4,6 +4,19 @@ import PersonForm from './PersonForm'
 import Persons from './Persons'
 import Services from './Services'
 
+
+const Notification = ({ message }) => {
+  if (message === null) {
+    return null
+  }
+
+  return (
+    <div className='notification'>
+      {message}
+    </div>
+  )
+}
+
 const App = () => {
   const [persons, setPersons] = useState([
     { name: 'Arto Hellas', number: '040-123456', id: 1 },
@@ -14,20 +27,30 @@ const App = () => {
   const [newName, setNewName] = useState('')
   
   const [phone, setPhone] = useState('')
+  
+  const [notification, setNotification] = useState(null)
 
   const [personsToShow, setPTS] = useState(persons)
   
+
+  const showNotification = (name) => {
+    setNotification(`Added ${name}`)
+    setTimeout(() => {setNotification(null)}, 5000)
+  }
+
   const addName = (event) => {
     event.preventDefault()
     let id = -1;
     if(newName!==""){
       let found = personsToShow.find(e => e.name ===  newName)
-      if(found != -1){
+      if(found && found != -1){
+        console.log(found)
         if(window.confirm(`${found.name} is already added to phonebook, replace the old number with a new one?`)){
           id = updatePTS()
           Services.update(found.name, phone, found.id)
           .then( res => {
                 id = updatePTS()
+                showNotification(found.name)
               })
           .catch(error => {
             console.log(error)
@@ -39,6 +62,7 @@ const App = () => {
           Services.create({name: newName, number:phone, id:id})
           .then( res => {
                 id = updatePTS()
+                showNotification(newName)
               })
           .catch(error => {
             console.log('fail')
@@ -93,6 +117,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={notification}/>
       <Filter handleFilterChange={handleFilterChange}/>
       <h2>add a new</h2>
       <PersonForm addName={addName} newName={newName} handleNameChange={handleNameChange} phone={phone} handlePhoneChange={handlePhoneChange}/>
