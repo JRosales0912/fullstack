@@ -1,4 +1,5 @@
 import Course from './Course'
+//already imported
 
 const App = () => {
   const courses = [
