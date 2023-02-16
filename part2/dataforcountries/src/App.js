@@ -1,14 +1,18 @@
 import Services from "./Services"
 import { useState } from 'react'
 
-const Countries = ({countryList}) => {
+const Countries = ({countryList, showOne}) => {
   console.log(countryList.data)
   if(!countryList.data || countryList.data.length>10){
     console.log('another in')
     return(<p>Too many matches, especify another filter</p>)
   } else if(countryList.data && countryList.data.length>1){
     console.log('in')
-    return(<ul>{countryList.data.map(country => <li key={country.name.common}>{country.name.common}</li>)}
+    return(
+    <ul>{countryList.data.map(country => 
+    <li key={country.name.common}>{country.name.common}
+    <button key={country.name.common} onClick={() =>showOne(null, country.name.common)}>show</button> 
+    </li>)} 
     </ul>)
   } else if(countryList.data && countryList.data.length === 1){
     console.log(countryList.data[0])
@@ -24,6 +28,8 @@ const Countries = ({countryList}) => {
       </ul>      
       <img src={countryList.data[0].flags.png}/>
     </div>)
+
+    
   }
 }
 
@@ -33,18 +39,26 @@ function App() {
   const handleChange = (event) =>{
     Services.getAll(event.target.value).then(
       countriess => {
-        console.log('before',countries)
-        setCountries(countriess)
-        console.log('after',countries)}
+        setCountries(countriess)}
     ).catch( e => {
       console.log('error')}
     )
   }
 
+  const showOne = (event, key) =>{
+    console.log('in here')
+    Services.getAll(key).then(
+      country => {
+        setCountries(country)}
+    ).catch( e => {
+      console.log('error')}
+    )
+    }
+
   return (
     <div>
       find countries<input onChange={handleChange}/>
-      <Countries countryList={countries}/>
+      <Countries countryList={countries} showOne={showOne}/>
     </div>
   );
 }
