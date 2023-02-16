@@ -21,8 +21,8 @@ const Countries = ({countryList}) => {
         {Object.values(countryList.data[0].languages).map((lang) => (
           <li key={lang}>{lang}</li>
         ))}
-      </ul>
-      
+      </ul>      
+      <img src={countryList.data[0].flags.png}/>
     </div>)
   }
 }
