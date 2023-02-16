@@ -1,4 +1,6 @@
-const http = require('http')
+const { request, response } = require('express')
+const express = require('express')
+const app = express()
 
 let notes = [
     { 
@@ -23,10 +25,20 @@ let notes = [
     }
 ]
 
-const app = http.createServer((request, response) => {
+ app.get('/persons', (request, response) => {
     response.writeHead(200, { 'Content-Type': 'application/json' })
-    response.end(JSON.stringify(notes))})
+    response.end(JSON.stringify(notes))
+})
+
+app.get('/info', (request, response) => {
+    response.writeHead(200, { 'Content-Type': 'text/plain' })
+    response.end(` Phonebook has info for ${notes.length} people \n 
+    ${(new Date(Date.now())).toUTCString()}`)
+  
+})
 
 const PORT = 3001
-app.listen(PORT)
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`)
+})
 console.log(`Server running on port ${PORT}`)
