@@ -17,9 +17,15 @@ const deleteUser = id => {
   return axios.delete(`${baseUrl}/${id}`)
 }
 
+const getWeather = (capital, api_key) => {
+  const url = `http://api.weatherapi.com/v1/current.json?key=${api_key}&q=${capital[0]}&aqi=no`;
+  return axios.get(url)
+}
+
 export default { 
   getAll, 
   create, 
   update,
-  deleteUser
+  deleteUser,
+  getWeather
 }

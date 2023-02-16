@@ -1,8 +1,9 @@
 import Services from "./Services"
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 const Countries = ({countryList, showOne}) => {
   console.log(countryList.data)
+  let weather = null
   if(!countryList.data || countryList.data.length>10){
     console.log('another in')
     return(<p>Too many matches, especify another filter</p>)
@@ -27,15 +28,37 @@ const Countries = ({countryList, showOne}) => {
         ))}
       </ul>      
       <img src={countryList.data[0].flags.png}/>
+
+      <h2>Weather in {countryList.data[0].capital[0]}</h2>
+      {weather !== null ? (
+        <>
+          <p>temperature {weather.current.temp_c} Celcius </p>
+          <img
+            alt="weather_condition_icon"
+            src={`https:${weather.current.condition.icon}`}
+            width={90}
+            height={90}
+          />
+          <p>wind {weather.current.wind_kph} m/s </p>
+        </>
+      ) : (
+        <></>
+      )}
     </div>)
 
-    
   }
 }
 
 function App() {
   const [countries, setCountries] = useState([])
-  
+  const api_key = process.env.REACT_APP_API_KEY;
+  const [weather, setWeather] = useState(null);
+
+  useEffect(() => {
+    //Services.getWeather(countries.data[0].capital.common, api_key).then((response) => setWeather(response.data));
+  }, [api_key, countries.data]);
+
+
   const handleChange = (event) =>{
     Services.getAll(event.target.value).then(
       countriess => {
