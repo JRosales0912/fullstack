@@ -1,6 +1,7 @@
 const { request, response } = require('express')
 const express = require('express')
 const app = express()
+app.use(express.json());
 
 let notes = [
     { 
@@ -28,6 +29,24 @@ let notes = [
 app.get('/api/persons', (request, response) => {
     response.writeHead(200, { 'Content-Type': 'application/json' })
     response.end(JSON.stringify(notes))
+})
+
+app.post('/api/persons', (request, response) => {
+    let newPerson = request.body
+    console.log(newPerson)
+    if(newPerson[0] && newPerson[0].name && newPerson[0].number) {
+        const id = Math.floor(Math.random() * 999999);
+        const newP = {name:newPerson[0].name, number:newPerson[0].number, id:id}
+        console.log(newP)
+        notes.push(newP)
+        response.writeHead(200, { 'Content-Type': 'application/json' })
+        response.end(` Phonebook has been updated\n 
+        ${JSON.stringify(notes)}`)
+    } else{
+        response.writeHead(404, { 'Content-Type': 'text/plain' })
+        response.end(` Invalid body ${newPerson} \n 
+        ${(new Date(Date.now())).toUTCString()}`)
+    }
 })
 
 app.get('/info', (request, response) => {
