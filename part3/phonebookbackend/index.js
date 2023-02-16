@@ -25,7 +25,7 @@ let notes = [
     }
 ]
 
- app.get('/persons', (request, response) => {
+app.get('/api/persons', (request, response) => {
     response.writeHead(200, { 'Content-Type': 'application/json' })
     response.end(JSON.stringify(notes))
 })
@@ -35,6 +35,19 @@ app.get('/info', (request, response) => {
     response.end(` Phonebook has info for ${notes.length} people \n 
     ${(new Date(Date.now())).toUTCString()}`)
   
+})
+
+app.get('/api/persons/:id', (request, response) => {
+    if(notes[request.params.id])
+    {        
+        response.writeHead(200, { 'Content-Type': 'application/json' })
+        response.end(JSON.stringify(notes[request.params.id]))
+    }
+    else {        
+        response.writeHead(404, { 'Content-Type': 'text/plain' })
+        response.end(` Phonebook has  no info for id ${request.params.id} \n 
+        ${(new Date(Date.now())).toUTCString()}`)
+    }
 })
 
 const PORT = 3001
