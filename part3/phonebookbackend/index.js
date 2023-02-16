@@ -34,7 +34,7 @@ app.get('/api/persons', (request, response) => {
 app.post('/api/persons', (request, response) => {
     let newPerson = request.body
     console.log(newPerson)
-    if(newPerson[0] && newPerson[0].name && newPerson[0].number) {
+    if(newPerson[0] && newPerson[0].name && newPerson[0].number && !findValueByName(newPerson[0].name)) {
         const id = Math.floor(Math.random() * 999999);
         const newP = {name:newPerson[0].name, number:newPerson[0].number, id:id}
         console.log(newP)
@@ -43,8 +43,8 @@ app.post('/api/persons', (request, response) => {
         response.end(` Phonebook has been updated\n 
         ${JSON.stringify(notes)}`)
     } else{
-        response.writeHead(404, { 'Content-Type': 'text/plain' })
-        response.end(` Invalid body ${newPerson} \n 
+        response.writeHead(400, { 'Content-Type': 'text/plain' })
+        response.end(` Invalid body ${JSON.stringify(newPerson)} or already existing name \n 
         ${(new Date(Date.now())).toUTCString()}`)
     }
 })
@@ -89,6 +89,16 @@ const findValue = (id) => {
     for (let index = 0; index < notes.length; index++) {
         const element = notes[index];
         if(element.id == id){
+            return element
+        }
+    }
+    return false
+}
+
+const findValueByName = (name) => {
+    for (let index = 0; index < notes.length; index++) {
+        const element = notes[index];
+        if(element.name == name){
             return element
         }
     }
