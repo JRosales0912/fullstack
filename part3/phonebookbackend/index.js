@@ -7,6 +7,7 @@ app.use(cors({
     origin: '*'
 }));
 app.use(express.json());
+app.use(express.static('build'));
 app.use(morgan("",':method :url :status :res[content-length] - :response-time ms - :body'));
 
 let notes = [
@@ -39,7 +40,6 @@ app.get('/api/persons', (request, response) => {
 
 app.post('/api/persons', (request, response) => {
     let newPerson = request.body
-    console.log(newPerson)
     if(newPerson[0] && newPerson[0].name && newPerson[0].number && !findValueByName(newPerson[0].name)) {
         const id = Math.floor(Math.random() * 999999);
         const newP = {name:newPerson[0].name, number:newPerson[0].number, id:id}
