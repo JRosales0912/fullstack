@@ -1,7 +1,11 @@
 const { request, response } = require('express')
 const express = require('express');
 const morgan = require('morgan');
+const cors = require('cors')
 const app = express()
+app.use(cors({
+    origin: '*'
+}));
 app.use(express.json());
 app.use(morgan("",':method :url :status :res[content-length] - :response-time ms - :body'));
 
@@ -74,7 +78,7 @@ app.get('/api/persons/:id', (request, response) => {
 app.delete('/api/persons/:id', (request, response) => {
     if(findValue(request.params.id))
     {
-        delete notes[notes.indexOf(findValue(request.params.id))]  
+        notes.splice(notes.indexOf(findValue(request.params.id)),1)
         response.writeHead(200, { 'Content-Type': 'application/json' })
         response.end('Contanct delted new phonebook: '+JSON.stringify(notes))
         
