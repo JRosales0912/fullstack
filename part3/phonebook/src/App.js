@@ -83,7 +83,8 @@ const App = () => {
                 showNotification(newName)
               })
           .catch(error => {
-            console.log(error)
+            console.log(error.response.data.error)
+            showError(error.response.data.error)
           }) 
       }      
       setPersons(persons.concat({id:id, name: newName, number: phone}))

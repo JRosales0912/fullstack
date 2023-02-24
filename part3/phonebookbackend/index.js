@@ -42,7 +42,7 @@ app.get('/api/persons', (request, response) => {
     });
 })
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
     let newPerson = request.body
     const isAlreadyThere = findValueByName(newPerson[0].name)
     if(newPerson[0] && newPerson[0].name && newPerson[0].number && !isAlreadyThere) {
@@ -52,6 +52,9 @@ app.post('/api/persons', (request, response) => {
         newP.save().then(savedPhone => {
             response.json(savedPhone)
         })
+        .catch(error =>  {
+            console.log('error in post')
+            next(error)})
     } else if(isAlreadyThere){
         const filter = { name: isAlreadyThere.name };
         isAlreadyThere.number = newPerson[0].number
@@ -136,6 +139,10 @@ const errorHandler = (error, request, response, next) => {
     if (error.name === 'CastError') {
       return response.status(400).send({ error: 'malformatted id' })
     } 
+    else if (error.name === 'ValidationError') 
+    {    
+        return response.status(400).json({ error: error.message })
+    }
   
     next(error)
   }
