@@ -44,14 +44,21 @@ app.get('/api/persons', (request, response) => {
 
 app.post('/api/persons', (request, response) => {
     let newPerson = request.body
-    if(newPerson[0] && newPerson[0].name && newPerson[0].number && !findValueByName(newPerson[0].name)) {
+    const isAlreadyThere = findValueByName(newPerson[0].name)
+    if(newPerson[0] && newPerson[0].name && newPerson[0].number && !isAlreadyThere) {
         const id = Math.floor(Math.random() * 999999);
 
         const newP = new phonebookdb({name:newPerson[0].name, number:newPerson[0].number})
         newP.save().then(savedPhone => {
             response.json(savedPhone)
         })
-    } else{
+    } else if(isAlreadyThere){
+        const filter = { name: isAlreadyThere.name };
+        isAlreadyThere.number = newPerson[0].number
+        phonebookdb.findOneAndUpdate(filter, isAlreadyThere);
+        response.json(isAlreadyThere)
+    }
+    else{
         response.writeHead(400, { 'Content-Type': 'text/plain' })
         response.end(` Invalid body ${JSON.stringify(newPerson)} or already existing name \n 
         ${(new Date(Date.now())).toUTCString()}`)
@@ -100,13 +107,18 @@ const findValue = (id) => {
 }
 
 const findValueByName = (name) => {
-    for (let index = 0; index < notes.length; index++) {
-        const element = notes[index];
-        if(element.name == name){
-            return element
-        }
-    }
-    return false
+    phonebookdb.findOne({ name: name }).exec()
+    .then(phoneContanct => {
+      if (phoneContanct) {
+        return phoneContanct
+      } else {
+        return false
+      }
+    })
+    .catch(error => {
+        console.log(error)
+        response.status(400).send({ error: 'malformatted id' })
+    })
 }
 
 const errorHandler = (error, request, response, next) => {
