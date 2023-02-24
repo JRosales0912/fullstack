@@ -66,10 +66,30 @@ app.post('/api/persons', (request, response) => {
 })
 
 app.get('/info', (request, response) => {
-    response.writeHead(200, { 'Content-Type': 'text/plain' })
-    response.end(` Phonebook has info for ${notes.length} people \n 
-    ${(new Date(Date.now())).toUTCString()}`)
+    phonebookdb.find().then(res => { 
+        response.writeHead(200, { 'Content-Type': 'text/plain' })
+        response.end(` Phonebook has info for ${res.length} people \n 
+        ${(new Date(Date.now())).toUTCString()}`)
+    });
   
+})
+
+app.put('/api/persons/:id', (request, response) => {
+    phonebookdb.findById(request.params.id).then(found =>{
+        console.log('found',found)
+        let newPerson = request.body
+        console.log(request.body)
+        found.number = newPerson.number
+        phonebookdb.findByIdAndUpdate(request.params.id, found).then(savedPhone => {
+            console.log(savedPhone)
+            response.json(savedPhone)
+        })
+        .catch(error => {
+            console.log(error)
+            response.status(400).send({ error: 'malformatted id' })
+        })
+    })
+    
 })
 
 app.get('/api/persons/:id', (request, response) => {
@@ -94,17 +114,6 @@ app.delete('/api/persons/:id', (request, response, next) => {
     })
     .catch(error => next(error))
 })
-
-const findValue = (id) => {
-    console.log(id)
-    for (let index = 0; index < notes.length; index++) {
-        const element = notes[index];
-        if(element.id == id){
-            return element
-        }
-    }
-    return false
-}
 
 const findValueByName = (name) => {
     phonebookdb.findOne({ name: name }).exec()
