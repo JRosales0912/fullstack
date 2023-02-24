@@ -2,6 +2,8 @@ const { request, response } = require('express')
 const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors')
+const phonebookdb = require('./models/mongo')
+require('dotenv').config()
 const app = express()
 app.use(cors({
     origin: '*'
@@ -34,20 +36,22 @@ let notes = [
 ]
 
 app.get('/api/persons', (request, response) => {
-    response.writeHead(200, { 'Content-Type': 'application/json' })
-    response.end(JSON.stringify(notes))
+    phonebookdb.find().then(res => { 
+        response.writeHead(200, { 'Content-Type': 'application/json' })
+        console.log(res)
+        response.end(JSON.stringify(res))
+    });
 })
 
 app.post('/api/persons', (request, response) => {
     let newPerson = request.body
     if(newPerson[0] && newPerson[0].name && newPerson[0].number && !findValueByName(newPerson[0].name)) {
         const id = Math.floor(Math.random() * 999999);
-        const newP = {name:newPerson[0].name, number:newPerson[0].number, id:id}
-        console.log(newP)
-        notes.push(newP)
-        response.writeHead(200, { 'Content-Type': 'application/json' })
-        response.end(` Phonebook has been updated\n 
-        ${JSON.stringify(notes)}`)
+
+        const newP = new phonebookdb({name:newPerson[0].name, number:newPerson[0].number})
+        newP.save().then(savedPhone => {
+            response.json(savedPhone)
+        })
     } else{
         response.writeHead(400, { 'Content-Type': 'text/plain' })
         response.end(` Invalid body ${JSON.stringify(newPerson)} or already existing name \n 
