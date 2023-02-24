@@ -38,7 +38,6 @@ let notes = [
 app.get('/api/persons', (request, response) => {
     phonebookdb.find().then(res => { 
         response.writeHead(200, { 'Content-Type': 'application/json' })
-        console.log(res)
         response.end(JSON.stringify(res))
     });
 })
@@ -67,31 +66,25 @@ app.get('/info', (request, response) => {
 })
 
 app.get('/api/persons/:id', (request, response) => {
-    if(findValue(request.params.id))
-    {        
-        response.writeHead(200, { 'Content-Type': 'application/json' })
-        response.end(JSON.stringify(findValue(id)))
-    }
-    else {        
-        response.writeHead(404, { 'Content-Type': 'text/plain' })
-        response.end(` Phonebook has  no info for id ${request.params.id} \n 
-        ${(new Date(Date.now())).toUTCString()}`)
-    }
+    phonebookdb.findById(request.params.id)
+    .then(phoneContanct => {
+      if (phoneContanct) {
+        response.json(phoneContanct)
+      } else {
+        response.status(404).end()
+      }
+    })
+    .catch(error => {
+        console.log(error)
+        response.status(400).send({ error: 'malformatted id' })
+    })
 })
 
 app.delete('/api/persons/:id', (request, response) => {
-    if(findValue(request.params.id))
-    {
-        notes.splice(notes.indexOf(findValue(request.params.id)),1)
-        response.writeHead(200, { 'Content-Type': 'application/json' })
-        response.end('Contanct delted new phonebook: '+JSON.stringify(notes))
-        
-    }
-    else {        
-        response.writeHead(404, { 'Content-Type': 'text/plain' })
-        response.end(` Phonebook has  no info for id ${request.params.id} \n 
-        ${(new Date(Date.now())).toUTCString()}`)
-    }
+    phonebookdb.findByIdAndRemove(request.params.id)
+    .then(result => {
+      response.status(204).end()
+    })
 })
 
 const findValue = (id) => {
