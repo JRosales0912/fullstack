@@ -17,7 +17,17 @@ mongoose.connect(url)
 
 const phSchema = new mongoose.Schema({ 
   name: {    type: String,    minLength: 3,    required: true  },
-  number: String,
+  number: {
+    type: String,
+    minLength: 3,
+    validate: {
+      validator: function(v) {
+        return /\d{2}-\d{7}/.test(v) || /\d{3}-\d{6}/.test(v);
+      },
+      message: props => `The phone ${props.value} is not in the correct format.`
+    },
+    required: [true, 'User phone number required']
+  },
 })
 
 phSchema.set('toJSON', {
