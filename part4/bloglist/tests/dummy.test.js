@@ -90,4 +90,12 @@ const listWithOneBlog = [
             blogs: 3
           })
     })
+
+    test('when you want to find the most liked author', () => {
+        const result = listHelper.mostLikes(blogs)
+        expect(result).toEqual({
+            author: "Edsger W. Dijkstra",
+            likes: 17
+          })
+    })
   })
