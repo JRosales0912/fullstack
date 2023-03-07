@@ -82,4 +82,12 @@ const listWithOneBlog = [
             likes: 12
           })
     })
+
+    test('when you want to find the most published author', () => {
+        const result = listHelper.mostBlogs(blogs)
+        expect(result).toEqual({
+            author: "Robert C. Martin",
+            blogs: 3
+          })
+    })
   })
