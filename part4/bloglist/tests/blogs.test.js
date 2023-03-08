@@ -63,61 +63,74 @@ beforeEach(async () => {
     await blogObject.save()
 })
 
-test('blogs are returned as json', async () => {
+describe('First tests ', () =>{ 
+  test('blogs are returned as json', async () => {
+      const response = await api.get('/api/blogs')
+      
+      expect(response.body.length).toEqual(2)
+  })
+
+
+  test('blogs have id', async () => {
     const response = await api.get('/api/blogs')
     
-    expect(response.body.length).toEqual(2)
+    expect(response.body[0].id).toBeDefined()
+  })
+
+  test('post a new blog', async () => {
+    await api.post('/api/blogs').send(blogs[2])
+      
+    const response = await api.get('/api/blogs')
+
+    expect(response.body.length).toBe(3)
+  })
+
+  test('post a new blog without likes', async () => {
+    await api.post('/api/blogs').send({
+      title: "Without likes",
+      author: "no likes",
+      url: "https://reactpatterns.com/"
+    })  
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+      
+    const response = await api.get('/api/blogs')
+    const blogentry = response.body.find(element => element.author === 'no likes')
+    expect(blogentry.likes).toEqual(0)
+  }, 10000)
+
+  test('post a new blog without url', async () => {
+    await api.post('/api/blogs').send({
+      title: "Without url",
+      author: "no url",
+      likes: 100
+    })  
+    .expect(401)
+
+  }, 10000)
+
+
+  test('post a new blog without title', async () => {
+    await api.post('/api/blogs').send({
+      author: "no title",
+      url: "https://reactpatterns.com/",
+      likes: 100
+    })  
+    .expect(401)
+
+  }, 10000)
 })
 
 
-test('blogs have id', async () => {
-  const response = await api.get('/api/blogs')
-  
-  expect(response.body[0].id).toBeDefined()
-})
-
-test('post a new blog', async () => {
-  await api.post('/api/blogs').send(blogs[2])
-    
-  const response = await api.get('/api/blogs')
-
-  expect(response.body.length).toBe(3)
-})
-
-test('post a new blog without likes', async () => {
-  await api.post('/api/blogs').send({
-    title: "Without likes",
-    author: "no likes",
-    url: "https://reactpatterns.com/"
-  })  
-  .expect(201)
-  .expect('Content-Type', /application\/json/)
-    
-  const response = await api.get('/api/blogs')
-  const blogentry = response.body.find(element => element.author === 'no likes')
-  expect(blogentry.likes).toEqual(0)
-}, 10000)
-
-test('post a new blog without url', async () => {
-  await api.post('/api/blogs').send({
-    title: "Without url",
-    author: "no url",
-    likes: 100
-  })  
-  .expect(401)
-
-}, 10000)
-
-
-test('post a new blog without title', async () => {
-  await api.post('/api/blogs').send({
-    author: "no title",
-    url: "https://reactpatterns.com/",
-    likes: 100
-  })  
-  .expect(401)
-
-}, 10000)
+describe('Delete tests ', () =>{
+  test('delte blog', async () => {
+    const beforeresp = await api.get('/api/blogs')
+    await api.delete('/api/blogs/'+blogs[0]._id)
+    .expect(204)
+    const afterrespo = await api.get('/api/blogs')
+    expect(beforeresp.body.length).toBeGreaterThan(afterrespo.body.length)
+  })
+ }, 10000)
 
 afterAll(async () => {
   await mongoose.connection.close()

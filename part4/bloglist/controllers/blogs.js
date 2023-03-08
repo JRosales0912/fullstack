@@ -21,6 +21,14 @@ blogRouter.post('/api/blogs', (request, response, next) => {
         next(error)})
   })
 
+  blogRouter.delete('/api/blogs/:id', (request, response, next) => {
+    blogModel.findByIdAndRemove(request.params.id)
+      .then(() => {
+        response.status(204).end()
+      })
+      .catch(error => next(error))
+  })
+
   const errorHandler = (error, request, response, next) => {    
     if (error.name === 'ValidationError') {    
       return response.status(401).json({ error: error.message })
