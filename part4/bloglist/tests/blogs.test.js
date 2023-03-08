@@ -76,6 +76,15 @@ test('blogs have id', async () => {
   expect(response.body[0].id).toBeDefined()
 })
 
+test('post a new blog', async () => {
+  await api.post('/api/blogs', { headers: {'content-type' : 'application/json'}
+  , body: JSON.stringify(blogs[2]) })
+    
+  const response = await api.get('/api/blogs')
+
+  expect(response.body.length).toBe(3)
+})
+
 afterAll(async () => {
   await mongoose.connection.close()
 })
