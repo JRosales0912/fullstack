@@ -7,9 +7,11 @@ mongoose.connect(mongoUrl)
 
 
 const blogSchema = new mongoose.Schema({
-    title: String,
+    title:  {    type: String, 
+      required: [true, 'Title is required']  },
     author: String,
-    url: String,
+    url:  {    type: String, 
+      required: [true, 'URL is required']  },
     likes: {
       type: Number,
       default: 0

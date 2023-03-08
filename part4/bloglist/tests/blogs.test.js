@@ -94,10 +94,29 @@ test('post a new blog without likes', async () => {
   .expect('Content-Type', /application\/json/)
     
   const response = await api.get('/api/blogs')
-  console.log(response.body)
   const blogentry = response.body.find(element => element.author === 'no likes')
-  console.log(blogentry)
   expect(blogentry.likes).toEqual(0)
+}, 10000)
+
+test('post a new blog without url', async () => {
+  await api.post('/api/blogs').send({
+    title: "Without url",
+    author: "no url",
+    likes: 100
+  })  
+  .expect(401)
+
+}, 10000)
+
+
+test('post a new blog without title', async () => {
+  await api.post('/api/blogs').send({
+    author: "no title",
+    url: "https://reactpatterns.com/",
+    likes: 100
+  })  
+  .expect(401)
+
 }, 10000)
 
 afterAll(async () => {
