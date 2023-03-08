@@ -132,6 +132,25 @@ describe('Delete tests ', () =>{
   })
  }, 10000)
 
+
+describe('Update tests ', () =>{
+test('update blog', async () => {
+  const newlikes = 149
+  await api.put('/api/blogs/'+blogs[0]._id)
+  .send({
+    _id: "5a422a851b54a676234d17f7",
+    title: "React patterns",
+    author: "Michael Chan",
+    url: "https://reactpatterns.com/",
+    likes: newlikes,
+    __v: 0
+  },)
+  const afterrespo = await api.get('/api/blogs')
+  expect(afterrespo.body[0].id).toEqual(blogs[0]._id)
+  expect(afterrespo.body[0].likes).toEqual(newlikes)
+})
+}, 10000)
+
 afterAll(async () => {
   await mongoose.connection.close()
 })

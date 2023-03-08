@@ -29,6 +29,23 @@ blogRouter.post('/api/blogs', (request, response, next) => {
       .catch(error => next(error))
   })
 
+
+  blogRouter.put('/api/blogs/:id', (request, response) => {
+    blogModel.findById(request.params.id).then(found =>{
+      let newBlog = request.body
+      found.likes = newBlog.likes
+      blogModel.findByIdAndUpdate(request.params.id, found).then(savedBlog => {
+        console.log(savedBlog)
+        response.json(savedBlog)
+      })
+        .catch(error => {
+          console.log(error)
+          response.status(400).send({ error: 'malformatted id' })
+        })
+    })
+      
+  })
+
   const errorHandler = (error, request, response, next) => {    
     if (error.name === 'ValidationError') {    
       return response.status(401).json({ error: error.message })
