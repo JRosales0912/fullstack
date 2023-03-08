@@ -77,13 +77,28 @@ test('blogs have id', async () => {
 })
 
 test('post a new blog', async () => {
-  await api.post('/api/blogs', { headers: {'content-type' : 'application/json'}
-  , body: JSON.stringify(blogs[2]) })
+  await api.post('/api/blogs').send(blogs[2])
     
   const response = await api.get('/api/blogs')
 
   expect(response.body.length).toBe(3)
 })
+
+test('post a new blog without likes', async () => {
+  await api.post('/api/blogs').send({
+    title: "Without likes",
+    author: "no likes",
+    url: "https://reactpatterns.com/"
+  })  
+  .expect(201)
+  .expect('Content-Type', /application\/json/)
+    
+  const response = await api.get('/api/blogs')
+  console.log(response.body)
+  const blogentry = response.body.find(element => element.author === 'no likes')
+  console.log(blogentry)
+  expect(blogentry.likes).toEqual(0)
+}, 10000)
 
 afterAll(async () => {
   await mongoose.connection.close()
