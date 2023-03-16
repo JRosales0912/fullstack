@@ -19,7 +19,8 @@ blogRouter.post('/', (request, response, next) => {
     const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)  
     if (!decodedToken.id) {   
         return response.status(401).json({ error: 'token invalid' })  
-    }  
+    }
+    request.body.user = decodedToken.id  
     const blog = new blogModel(request.body)
 
     blog
@@ -27,7 +28,7 @@ blogRouter.post('/', (request, response, next) => {
       .then(result => {
         response.status(201).json(result)
         User.findById(decodedToken.id).then( (user) => {
-          user.blog = user.blog.concat(result._id)
+          user.blogs = user.blogs.concat(result._id)
           user.save()
         })
       })
@@ -40,8 +41,8 @@ blogRouter.post('/', (request, response, next) => {
     if (!decodedToken.id) {   
         return response.status(401).json({ error: 'token invalid' })  
     }
-    blogModel.findById(Request.params.id).then( (foundBlog)=>{
-      if(foundBlog.user===decodedToken.id){
+    blogModel.findById(request.params.id).then( (foundBlog)=>{
+      if(foundBlog.user==decodedToken.id){
         blogModel.findByIdAndRemove(request.params.id)
       .then(() => {
         response.status(204).end()

@@ -8,8 +8,9 @@ app.use((request, response, next)=>{
     const authorization = request.get('authorization')  
     if (authorization && authorization.startsWith('Bearer ')) {
         request.token = authorization.replace('Bearer ', '')  
-    }  
-    request.token = null
+    } else{
+        request.token = null
+    }
     next()
 })
 
