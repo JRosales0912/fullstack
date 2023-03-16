@@ -1,4 +1,5 @@
 const express = require('express')
+const jwt = require('jsonwebtoken')
 const app = express()
 const cors = require('cors')
 
@@ -8,8 +9,10 @@ app.use((request, response, next)=>{
     const authorization = request.get('authorization')  
     if (authorization && authorization.startsWith('Bearer ')) {
         request.token = authorization.replace('Bearer ', '')  
+        request.user = jwt.verify(request.token, process.env.SECRET)
     } else{
         request.token = null
+        request.user = false
     }
     next()
 })

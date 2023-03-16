@@ -16,7 +16,7 @@ blogRouter.get('/', (request, response) => {
   })
   
 blogRouter.post('/', (request, response, next) => {
-    const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)  
+    const decodedToken = request.user  
     if (!decodedToken.id) {   
         return response.status(401).json({ error: 'token invalid' })  
     }
@@ -37,7 +37,7 @@ blogRouter.post('/', (request, response, next) => {
   })
 
   blogRouter.delete('/:id', (request, response, next) => {
-    const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)  
+    const decodedToken = request.user  
     if (!decodedToken.id) {   
         return response.status(401).json({ error: 'token invalid' })  
     }
