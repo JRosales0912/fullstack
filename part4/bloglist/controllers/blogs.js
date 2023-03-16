@@ -1,6 +1,15 @@
 const blogRouter = require('express').Router()
 const blogModel = require('../models/blog')
+const jwt = require('jsonwebtoken')
 const User = require('../models/user')
+
+const getTokenFrom = request => {  
+  const authorization = request.get('authorization')  
+  if (authorization && authorization.startsWith('Bearer ')) {
+      return authorization.replace('Bearer ', '')  
+    }  
+  return null
+}
 
 blogRouter.get('/', (request, response) => {
     blogModel
@@ -11,13 +20,17 @@ blogRouter.get('/', (request, response) => {
   })
   
 blogRouter.post('/', (request, response, next) => {
+    const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)  
+    if (!decodedToken.id) {   
+        return response.status(401).json({ error: 'token invalid' })  
+    }  
     const blog = new blogModel(request.body)
 
     blog
       .save()
       .then(result => {
         response.status(201).json(result)
-        User.findOne({}).then( (user) => {
+        User.findById(decodedToken.id).then( (user) => {
           user.blog = user.blog.concat(result._id)
           user.save()
         })
@@ -54,6 +67,10 @@ blogRouter.post('/', (request, response, next) => {
   const errorHandler = (error, request, response, next) => {    
     if (error.name === 'ValidationError') {    
       return response.status(401).json({ error: error.message })
+    } else if (error.name ===  'JsonWebTokenError') {    
+      return response.status(400).json({ error: error.message })  
+    } else if (error.name === 'TokenExpiredError') {    
+    return response.status(401).json({      error: 'token expired'    })  
     }
     next(error)
   }
