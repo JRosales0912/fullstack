@@ -34,9 +34,9 @@ usersRouter.post('/', async (request, response) => {
 
 usersRouter.get('/', async (request, response) => {
     User
-      .find({})
-      .then(blogs => {
-        response.json(blogs)
+      .find({}).populate('blogs')
+      .then(users => {
+        response.json(users)
       })
   })
 
