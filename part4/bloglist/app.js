@@ -4,7 +4,7 @@ const cors = require('cors')
 
 app.use(cors())
 app.use(express.json())
-
+app.use(middleware.tokenExtractor)
 
 const blogRtr = require('./controllers/blogs')
 const usersRouter = require('./controllers/users')
