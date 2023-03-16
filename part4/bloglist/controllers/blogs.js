@@ -1,7 +1,7 @@
 const blogRouter = require('express').Router()
 const blogModel = require('../models/blog')
 
-blogRouter.get('/api/blogs', (request, response) => {
+blogRouter.get('/', (request, response) => {
     blogModel
       .find({})
       .then(blogs => {
@@ -9,7 +9,7 @@ blogRouter.get('/api/blogs', (request, response) => {
       })
   })
   
-blogRouter.post('/api/blogs', (request, response, next) => {
+blogRouter.post('/', (request, response, next) => {
     const blog = new blogModel(request.body)
 
     blog
@@ -21,7 +21,7 @@ blogRouter.post('/api/blogs', (request, response, next) => {
         next(error)})
   })
 
-  blogRouter.delete('/api/blogs/:id', (request, response, next) => {
+  blogRouter.delete('/:id', (request, response, next) => {
     blogModel.findByIdAndRemove(request.params.id)
       .then(() => {
         response.status(204).end()
@@ -30,7 +30,7 @@ blogRouter.post('/api/blogs', (request, response, next) => {
   })
 
 
-  blogRouter.put('/api/blogs/:id', (request, response) => {
+  blogRouter.put('/:id', (request, response) => {
     blogModel.findById(request.params.id).then(found =>{
       let newBlog = request.body
       found.likes = newBlog.likes
@@ -50,7 +50,6 @@ blogRouter.post('/api/blogs', (request, response, next) => {
     if (error.name === 'ValidationError') {    
       return response.status(401).json({ error: error.message })
     }
-    
     next(error)
   }
   
