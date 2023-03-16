@@ -4,7 +4,14 @@ const cors = require('cors')
 
 app.use(cors())
 app.use(express.json())
-app.use(middleware.tokenExtractor)
+app.use((request, response, next)=>{
+    const authorization = request.get('authorization')  
+    if (authorization && authorization.startsWith('Bearer ')) {
+        request.token = authorization.replace('Bearer ', '')  
+    }  
+    request.token = null
+    next()
+})
 
 const blogRtr = require('./controllers/blogs')
 const usersRouter = require('./controllers/users')
