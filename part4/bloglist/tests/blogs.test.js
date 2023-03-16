@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const supertest = require('supertest')
+const { options } = require('../app')
 const app = require('../app')
 const blog = require('../models/blog')
 const api = supertest(app)
@@ -11,6 +12,7 @@ const blogs  = [
       author: "Michael Chan",
       url: "https://reactpatterns.com/",
       likes: 7,
+      user: "6412f48568e495d385294956",
       __v: 0
     },
     {
@@ -18,6 +20,7 @@ const blogs  = [
       title: "Go To Statement Considered Harmful",
       author: "Edsger W. Dijkstra",
       url: "http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html",
+      user: "6412f48568e495d385294956",
       likes: 5,
       __v: 0
     },
@@ -26,6 +29,7 @@ const blogs  = [
       title: "Canonical string reduction",
       author: "Edsger W. Dijkstra",
       url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html",
+      user: "6412f48568e495d385294956",
       likes: 12,
       __v: 0
     },
@@ -34,6 +38,7 @@ const blogs  = [
       title: "First class tests",
       author: "Robert C. Martin",
       url: "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll",
+      user: "6412f48568e495d385294956",
       likes: 10,
       __v: 0
     },
@@ -42,6 +47,7 @@ const blogs  = [
       title: "TDD harms architecture",
       author: "Robert C. Martin",
       url: "http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html",
+      user: "6412f48568e495d385294956",
       likes: 0,
       __v: 0
     },
@@ -50,6 +56,7 @@ const blogs  = [
       title: "Type wars",
       author: "Robert C. Martin",
       url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html",
+      user: "6412f48568e495d385294956",
       likes: 2,
       __v: 0
     }  
@@ -78,19 +85,30 @@ describe('First tests ', () =>{
   })
 
   test('post a new blog', async () => {
-    await api.post('/api/blogs').send(blogs[2])
-      
+    await api.post('/api/blogs')
+    .send(blogs[2])
+    .auth("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXIxIiwiaWQiOiI2NDEyZjQ4NTY4ZTQ5NWQzODUyOTQ5NTYiLCJpYXQiOjE2Nzg5NjY1NjR9.vTP1NIDFULbsFNErtIqJq_ECWw2Q51qckJ6QzIV0xtU", 
+    {type: "bearer"}
+    )
+                  
     const response = await api.get('/api/blogs')
 
     expect(response.body.length).toBe(3)
   })
 
+  test('post a new blogwithout token', async () => {
+    await api.post('/api/blogs')
+    .send(blogs[2])
+    .expect(401)
+  })
   test('post a new blog without likes', async () => {
     await api.post('/api/blogs').send({
       title: "Without likes",
       author: "no likes",
       url: "https://reactpatterns.com/"
-    })  
+    }).auth("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXIxIiwiaWQiOiI2NDEyZjQ4NTY4ZTQ5NWQzODUyOTQ5NTYiLCJpYXQiOjE2Nzg5NjY1NjR9.vTP1NIDFULbsFNErtIqJq_ECWw2Q51qckJ6QzIV0xtU", 
+    {type: "bearer"}
+    )
     .expect(201)
     .expect('Content-Type', /application\/json/)
       
@@ -104,7 +122,9 @@ describe('First tests ', () =>{
       title: "Without url",
       author: "no url",
       likes: 100
-    })  
+    }).auth("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXIxIiwiaWQiOiI2NDEyZjQ4NTY4ZTQ5NWQzODUyOTQ5NTYiLCJpYXQiOjE2Nzg5NjY1NjR9.vTP1NIDFULbsFNErtIqJq_ECWw2Q51qckJ6QzIV0xtU", 
+    {type: "bearer"}
+    )
     .expect(401)
 
   }, 10000)
@@ -115,7 +135,9 @@ describe('First tests ', () =>{
       author: "no title",
       url: "https://reactpatterns.com/",
       likes: 100
-    })  
+    }).auth("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXIxIiwiaWQiOiI2NDEyZjQ4NTY4ZTQ5NWQzODUyOTQ5NTYiLCJpYXQiOjE2Nzg5NjY1NjR9.vTP1NIDFULbsFNErtIqJq_ECWw2Q51qckJ6QzIV0xtU", 
+    {type: "bearer"}
+    )  
     .expect(401)
 
   }, 10000)
@@ -126,6 +148,9 @@ describe('Delete tests ', () =>{
   test('delte blog', async () => {
     const beforeresp = await api.get('/api/blogs')
     await api.delete('/api/blogs/'+blogs[0]._id)
+    .auth("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXIxIiwiaWQiOiI2NDEyZjQ4NTY4ZTQ5NWQzODUyOTQ5NTYiLCJpYXQiOjE2Nzg5NjY1NjR9.vTP1NIDFULbsFNErtIqJq_ECWw2Q51qckJ6QzIV0xtU", 
+    {type: "bearer"}
+    )
     .expect(204)
     const afterrespo = await api.get('/api/blogs')
     expect(beforeresp.body.length).toBeGreaterThan(afterrespo.body.length)

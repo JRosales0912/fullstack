@@ -30,6 +30,8 @@ blogRouter.post('/', (request, response, next) => {
         User.findById(decodedToken.id).then( (user) => {
           user.blogs = user.blogs.concat(result._id)
           user.save()
+        }).catch(error => {
+          return
         })
       })
       .catch(error =>  {
