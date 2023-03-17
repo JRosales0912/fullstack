@@ -34,7 +34,36 @@ const App = () => {
   const [password, setPassword] = useState('') 
   const [user, setUser] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
+  const [token, setToken] = useState('') 
+  const [author, setAuthor] = useState('')  
+  const [url, setURL] = useState('')  
+  const [title, setTitle] = useState('')  
+  const [likes, setLikes] = useState('') 
 
+  
+  const handleAuthorChange = (event) => {
+    setAuthor(event.target.value)
+  }
+
+  const handleTitleChange = (event) => {
+    setTitle(event.target.value)
+  }
+  
+  const handleURLChange = (event) => {
+    setURL(event.target.value)
+  }
+
+  const handleLikesChange = (event) => {
+    setLikes(event.target.value)
+  }
+
+  const addBlog = (event) => {    
+    event.preventDefault()
+    blogService.addBlog(title, author, likes, url, token)
+    setAuthor('')
+    setTitle('')
+    setLikes('')
+  }
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -46,10 +75,11 @@ const App = () => {
     event.preventDefault()        
     try {      
       const user = await loginService.login({ username, password,})
-      console.log(user.username)
-      setUser(user.username)
-      setUsername('')
+      console.log(user)
+      setUser(user)
+      setUsername(user.username)
       setPassword('')
+      setToken(user.token)
     } catch (exception) {
       setErrorMessage('Wrong credentials')
       setTimeout(() => {
@@ -63,6 +93,8 @@ const App = () => {
       setUser(null)
       setUsername('')
       setPassword('')
+      setToken('')
+      setURL('')
   }
 
   if (user === null) {
@@ -96,8 +128,32 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
-      <h4> {user} logged in</h4>
+      <h4> {username} logged in</h4>
       <button onClick={handleLogout}>Logout</button>
+      <h2>add new blog</h2>
+      <div>
+      <form onSubmit={addBlog}>
+        <div>
+          Title: <input value={title} 
+            onChange={handleTitleChange}/>
+        </div>
+        <div>
+          Author: <input value={author} 
+            onChange={handleAuthorChange}/>
+        </div>        
+        <div>
+          URL: <input value={url} 
+            onChange={handleURLChange}/>
+        </div>
+        <div>
+          Likes: <input value={likes} 
+            onChange={handleLikesChange}/>
+        </div>
+        <div>
+          <button type="submit" >add</button>
+        </div>
+      </form>
+      </div>
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}

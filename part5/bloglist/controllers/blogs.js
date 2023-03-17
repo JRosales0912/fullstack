@@ -16,7 +16,7 @@ blogRouter.get('/', (request, response) => {
   })
   
 blogRouter.post('/', (request, response, next) => {
-    const decodedToken = request.user  
+    const decodedToken = request.user
     if (!decodedToken.id) {   
         return response.status(401).json({ error: 'token invalid' })  
     }
