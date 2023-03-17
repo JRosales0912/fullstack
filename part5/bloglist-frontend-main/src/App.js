@@ -33,12 +33,13 @@ const App = () => {
   const [username, setUsername] = useState('')   
   const [password, setPassword] = useState('') 
   const [user, setUser] = useState(null)
-  const [errorMessage, setErrorMessage] = useState(null)
   const [token, setToken] = useState('') 
   const [author, setAuthor] = useState('')  
   const [url, setURL] = useState('')  
   const [title, setTitle] = useState('')  
   const [likes, setLikes] = useState('') 
+  const [notification, setNotification] = useState(null)
+  const [error, setError] = useState(null)
 
   
   const handleAuthorChange = (event) => {
@@ -57,11 +58,22 @@ const App = () => {
     setLikes(event.target.value)
   }
 
+  const showNotification = (name, user) => {
+    setNotification(`Blog: "${name}" added by ${user}`)
+    setTimeout(() => {setNotification(null)}, 5000)
+  }
+
+  const showError = (name) => {
+    setError(`${name}`)
+    setTimeout(() => {setError(null)}, 5000)
+  }
   const addBlog = (event) => {    
     event.preventDefault()
     blogService.addBlog(title, author, likes, url, token)
+    showNotification(title, username)
     setAuthor('')
     setTitle('')
+    setURL('')
     setLikes('')
   }
 
@@ -75,15 +87,14 @@ const App = () => {
     event.preventDefault()        
     try {      
       const user = await loginService.login({ username, password,})
-      console.log(user)
       setUser(user)
       setUsername(user.username)
       setPassword('')
       setToken(user.token)
     } catch (exception) {
-      setErrorMessage('Wrong credentials')
+      showError('Wrong credentials')
       setTimeout(() => {
-        setErrorMessage(null)
+        showError(null)
       }, 5000)
     } 
   }
@@ -101,7 +112,7 @@ const App = () => {
     return (
       <div>
         <h2>Log in to application</h2>
-        <Notification message={errorMessage} />
+      <Error message={error}/>
 
         <form onSubmit={handleLogin}>        
         <div> 
@@ -127,6 +138,7 @@ const App = () => {
 
   return (
     <div>
+      <Notification message={notification}/>
       <h2>blogs</h2>
       <h4> {username} logged in</h4>
       <button onClick={handleLogout}>Logout</button>
