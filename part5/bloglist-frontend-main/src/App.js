@@ -77,6 +77,9 @@ const App = () => {
     setTitle('')
     setURL('')
     setLikes('')
+    blogService.getAll().then(blogs =>
+      setBlogs( blogs )
+    ) 
   }
 
   useEffect(() => {
