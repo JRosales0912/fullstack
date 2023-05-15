@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import LoginForm from './components/Login'
 
 
 const Notification = ({ message }) => {
@@ -40,6 +41,7 @@ const App = () => {
   const [likes, setLikes] = useState('') 
   const [notification, setNotification] = useState(null)
   const [error, setError] = useState(null)
+  const [loginVisible, setLoginVisible] = useState(false)
 
   
   const handleAuthorChange = (event) => {
@@ -108,10 +110,35 @@ const App = () => {
       setURL('')
   }
 
+  const loginForm = () => {
+    const hideWhenVisible = { display: loginVisible ? 'none' : '' }
+    const showWhenVisible = { display: loginVisible ? '' : 'none' }
+
+    return (
+      <div>
+        <div style={hideWhenVisible}>
+          <button onClick={() => setLoginVisible(true)}>log in</button>
+        </div>
+        <div style={showWhenVisible}>
+          <LoginForm
+            username={username}
+            password={password}
+            handleUsernameChange={({ target }) => setUsername(target.value)}
+            handlePasswordChange={({ target }) => setPassword(target.value)}
+            handleSubmit={handleLogin}
+          />
+          <button onClick={() => setLoginVisible(false)}>cancel</button>
+        </div>
+      </div>
+    )
+  }
+
   if (user === null) {
     return (
       <div>
         <h2>Log in to application</h2>
+        <button onClick={() => setLoginVisible(true)}>Log in</button>
+        <button onClick={() => setLoginVisible(false)}>cancel</button>
       <Error message={error}/>
 
         <form onSubmit={handleLogin}>        
