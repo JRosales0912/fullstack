@@ -34,7 +34,7 @@ const App = () => {
   const [username, setUsername] = useState('')   
   const [password, setPassword] = useState('') 
   const [user, setUser] = useState(null)
-  const [token, setToken] = useState('') 
+  const [token, setToken ] = useState('') 
   const [author, setAuthor] = useState('')  
   const [url, setURL] = useState('')  
   const [title, setTitle] = useState('')  
@@ -101,13 +101,13 @@ const App = () => {
     } 
   }
 
-  function handleLogout(event) {    
+  function handleLogout (event) {    
     event.preventDefault()       
-      setUser(null)
-      setUsername('')
-      setPassword('')
-      setToken('')
-      setURL('')
+      setUser(null) 
+      setUsername('') 
+      setPassword('') 
+      setToken('') 
+      setURL('') 
   }
 
   const loginForm = () => {
