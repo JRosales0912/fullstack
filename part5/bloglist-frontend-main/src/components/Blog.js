@@ -5,10 +5,11 @@ const Blog = ({blog}) => {
   if(visible) {
     return(
       <div style={{border: '1.8px solid red'}}>
-      <h4>{blog.title} <button onClick={() => setVisible(false)}>View</button></h4> 
+      <h4>{blog.title} <button onClick={() => setVisible(false)}>Hide</button></h4> 
       <h4>Author: {blog.author}</h4> 
       <h5>URL: {blog.url}</h5> 
       <h5>Likes: {blog.likes} <button>Like</button></h5>
+      <h5>User: {blog.user}</h5>
       </div>)
   } else {
     return(
