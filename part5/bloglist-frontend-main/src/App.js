@@ -1,8 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import LoginForm from './components/Login'
+import BlogForm from './components/BlogForm'
+import Togglable from './components/Togglable'
 
 
 const Notification = ({ message }) => {
@@ -42,7 +44,7 @@ const App = () => {
   const [notification, setNotification] = useState(null)
   const [error, setError] = useState(null)
   const [loginVisible, setLoginVisible] = useState(false)
-
+  const blogFormRef = useRef()
   
   const handleAuthorChange = (event) => {
     setAuthor(event.target.value)
@@ -79,7 +81,8 @@ const App = () => {
     setLikes('')
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
-    ) 
+    )
+    blogFormRef.current.toggleVisibility()
   }
 
   useEffect(() => {
@@ -110,43 +113,10 @@ const App = () => {
       setUsername('') 
       setPassword('') 
       setToken('') 
-      setURL('') 
+      setURL('')
+      setBlogs([])
   }
 
-  const blogForm = () => (
-    <div>
-      <h2>blogs</h2>
-      <h4> {username} logged in</h4>
-      <button onClick={handleLogout}>Logout</button>
-      <h2>add new blog</h2>
-      <div>
-      <form onSubmit={addBlog}>
-        <div>
-          Title: <input value={title} 
-            onChange={handleTitleChange}/>
-        </div>
-        <div>
-          Author: <input value={author} 
-            onChange={handleAuthorChange}/>
-        </div>        
-        <div>
-          URL: <input value={url} 
-            onChange={handleURLChange}/>
-        </div>
-        <div>
-          Likes: <input value={likes} 
-            onChange={handleLikesChange}/>
-        </div>
-        <div>
-          <button type="submit" >add</button>
-        </div>
-      </form>
-      </div>
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
-      )}
-    </div>
-  )
   const loginForm = () => {
     const hideWhenVisible = { display: loginVisible ? 'none' : '' }
     const showWhenVisible = { display: loginVisible ? '' : 'none' }
@@ -175,7 +145,29 @@ const App = () => {
         <Notification message={notification}/>
         {user === null ?
           loginForm() :
-          blogForm()
+          <div>
+          <h2>blogs</h2>
+          <h4> {username} logged in</h4>
+          <button onClick={handleLogout}>Logout</button>
+          <Togglable buttonLabel="new blog" ref={blogFormRef }>
+              <BlogForm
+              username={username}
+              handleLogout={handleLogout}
+              title={title}
+              addBlog={addBlog}
+              author={author}
+              url={url}
+              likes={likes}
+              handleTitleChange={handleTitleChange}
+              handleAuthorChange={handleAuthorChange}
+              handleURLChange={handleURLChange}
+              handleLikesChange={handleLikesChange}
+              />
+          </Togglable>
+          {blogs.map(blog =>
+            <Blog key={blog.id} blog={blog} />
+          )}
+        </div>
         }
       </div>
     )
