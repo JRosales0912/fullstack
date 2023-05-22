@@ -113,62 +113,8 @@ const App = () => {
       setURL('') 
   }
 
-  const loginForm = () => {
-    const hideWhenVisible = { display: loginVisible ? 'none' : '' }
-    const showWhenVisible = { display: loginVisible ? '' : 'none' }
-
-    return (
-      <div>
-        <div style={hideWhenVisible}>
-          <button onClick={() => setLoginVisible(true)}>log in</button>
-        </div>
-        <div style={showWhenVisible}>
-          <LoginForm
-            username={username}
-            password={password}
-            handleUsernameChange={({ target }) => setUsername(target.value)}
-            handlePasswordChange={({ target }) => setPassword(target.value)}
-            handleSubmit={handleLogin}
-          />
-          <button onClick={() => setLoginVisible(false)}>cancel</button>
-        </div>
-      </div>
-    )
-  }
-
-  if (user === null) {
-    return (
-      <div>
-        <h2>Log in to application</h2>
-        <button onClick={() => setLoginVisible(true)}>Log in</button>
-        <button onClick={() => setLoginVisible(false)}>cancel</button>
-      <Error message={error}/>
-
-        <form onSubmit={handleLogin}>        
-        <div> 
-          Username
-           <input 
-            type="text" 
-            value={username}
-            name="Username"
-            onChange={({ target }) => setUsername(target.value)}
-            />
-            </div>
-            <div>
-              Password
-              <input type="password" value={password} name="Password" 
-              onChange={({ target }) => setPassword(target.value)}
-            />
-         </div>
-        <button type="submit">login</button>
-      </form>
-      </div>
-    )
-  }
-
-  return (
+  const blogForm = () => (
     <div>
-      <Notification message={notification}/>
       <h2>blogs</h2>
       <h4> {username} logged in</h4>
       <button onClick={handleLogout}>Logout</button>
@@ -201,6 +147,38 @@ const App = () => {
       )}
     </div>
   )
+  const loginForm = () => {
+    const hideWhenVisible = { display: loginVisible ? 'none' : '' }
+    const showWhenVisible = { display: loginVisible ? '' : 'none' }
+
+    return (
+      <div>
+        <div style={hideWhenVisible}>
+          <button onClick={() => setLoginVisible(true)}>log in</button>
+        </div>
+        <div style={showWhenVisible}>
+          <LoginForm
+            username={username}
+            password={password}
+            handleUsernameChange={({ target }) => setUsername(target.value)}
+            handlePasswordChange={({ target }) => setPassword(target.value)}
+            handleSubmit={handleLogin}
+          />
+          <button onClick={() => setLoginVisible(false)}>cancel</button>
+        </div>
+      </div>
+    )
+  }
+    return (
+      <div>
+        <Error message={error}/>
+        <Notification message={notification}/>
+        {user === null ?
+          loginForm() :
+          blogForm()
+        }
+      </div>
+    )
 }
 
 export default App
