@@ -1,5 +1,5 @@
 import { useState } from 'react'
-const Blog = ({blog}) => {
+const Blog = ({blog, handleLike}) => {
   const [visible, setVisible] = useState(false)
 
   if(visible) {
@@ -8,7 +8,7 @@ const Blog = ({blog}) => {
       <h4>{blog.title} <button onClick={() => setVisible(false)}>Hide</button></h4> 
       <h4>Author: {blog.author}</h4> 
       <h5>URL: {blog.url}</h5> 
-      <h5>Likes: {blog.likes} <button>Like</button></h5>
+      <h5>Likes: {blog.likes} <button onClick={() => handleLike(blog.likes + 1,blog.id)}>Like</button></h5>
       <h5>User: {blog.user}</h5>
       </div>)
   } else {

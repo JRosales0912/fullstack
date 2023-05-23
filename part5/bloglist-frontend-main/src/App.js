@@ -84,6 +84,15 @@ const App = () => {
     )
     blogFormRef.current.toggleVisibility()
   }
+  
+  const handleLike = (id, likes) => {
+    blogService.likeBlog(id, likes, token).then(()=>{
+    showNotification("Liked Post", username)
+    blogService.getAll().then(blogs =>
+      setBlogs( blogs )
+    )
+  })
+  }
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -165,7 +174,7 @@ const App = () => {
               />
           </Togglable>
           {blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} />
+            <Blog key={blog.id} blog={blog} handleLike={handleLike} />
           )}
         </div>
         }

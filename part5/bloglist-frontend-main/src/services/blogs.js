@@ -16,5 +16,15 @@ const addBlog = (title, author, likes, url, token) => {
   return request.then(response => response.data)
 }
 
+const likeBlog = (likes, id, token) => {
+  let config = {
+    headers: {
+      'Authorization': 'Bearer ' + token
+    }
+  }
+  const request = axios.put(baseUrl+'/'+id, {likes:likes}, config)
+  return request.then(response => response.data)
+}
+
 // eslint-disable-next-line import/no-anonymous-default-export
-export default { getAll, addBlog }
+export default { getAll, addBlog, likeBlog }
