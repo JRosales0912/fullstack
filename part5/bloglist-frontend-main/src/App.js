@@ -67,6 +67,10 @@ const App = () => {
     setTimeout(() => {setNotification(null)}, 5000)
   }
 
+  const cmpLikes = (blog1, blog2) => {
+    return blog1.likes - blog2.likes
+  }
+
   const showError = (name) => {
     setError(`${name}`)
     setTimeout(() => {setError(null)}, 5000)
@@ -173,7 +177,7 @@ const App = () => {
               handleLikesChange={handleLikesChange}
               />
           </Togglable>
-          {blogs.map(blog =>
+          {blogs.sort(cmpLikes) && blogs.map(blog =>
             <Blog key={blog.id} blog={blog} handleLike={handleLike} />
           )}
         </div>
