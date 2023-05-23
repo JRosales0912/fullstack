@@ -1,5 +1,5 @@
 import { useState } from 'react'
-const Blog = ({blog, handleLike}) => {
+const Blog = ({blog, handleLike, deleteBlog}) => {
   const [visible, setVisible] = useState(false)
 
   if(visible) {
@@ -10,6 +10,7 @@ const Blog = ({blog, handleLike}) => {
       <h5>URL: {blog.url}</h5> 
       <h5>Likes: {blog.likes} <button onClick={() => handleLike(blog.likes + 1,blog.id)}>Like</button></h5>
       <h5>User: {blog.user}</h5>
+      <button onClick={() => deleteBlog(blog.id, blog.title, blog.author)}>Remove</button>
       </div>)
   } else {
     return(

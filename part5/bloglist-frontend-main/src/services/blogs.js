@@ -26,5 +26,15 @@ const likeBlog = (likes, id, token) => {
   return request.then(response => response.data)
 }
 
+const deleteBlog = (id, token) => {
+  let config = {
+    headers: {
+      'Authorization': 'Bearer ' + token
+    }
+  }
+  const request = axios.delete(baseUrl+'/'+id, config)
+  return request.then(response => response.data)
+}
+
 // eslint-disable-next-line import/no-anonymous-default-export
-export default { getAll, addBlog, likeBlog }
+export default { getAll, addBlog, likeBlog, deleteBlog }

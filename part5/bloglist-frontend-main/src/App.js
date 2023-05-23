@@ -91,11 +91,25 @@ const App = () => {
   
   const handleLike = (id, likes) => {
     blogService.likeBlog(id, likes, token).then(()=>{
-    showNotification("Liked Post", username)
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )
-  })
+      showNotification("Liked Post", username)
+      blogService.getAll().then(blogs =>
+        setBlogs( blogs )
+      )
+    })
+  }
+
+  const deleteBlog = (id, title, author) => {
+    if (window.confirm(`Remove blog ${title} by ${author}`)) {
+      blogService.deleteBlog(id, token).then(()=>{
+        showNotification("Deleted Blog", username)
+        blogService.getAll().then(blogs =>
+          setBlogs( blogs )
+        )
+      })
+      .catch((error) => {
+        showError(error.response.data.error)
+      })
+    }
   }
 
   useEffect(() => {
@@ -178,7 +192,8 @@ const App = () => {
               />
           </Togglable>
           {blogs.sort(cmpLikes) && blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} handleLike={handleLike} />
+            <Blog key={blog.id} blog={blog} handleLike={handleLike} 
+                  deleteBlog={deleteBlog} />
           )}
         </div>
         }
