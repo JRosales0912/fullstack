@@ -43,7 +43,7 @@ const App = () => {
   const [likes, setLikes] = useState('')
   const [notification, setNotification] = useState(null)
   const [error, setError] = useState(null)
-  const [loginVisible, setLoginVisible] = useState(false)
+  const [loginVisible, setLoginVisible] = useState(true)
   const blogFormRef = useRef()
 
   const handleAuthorChange = (event) => {
