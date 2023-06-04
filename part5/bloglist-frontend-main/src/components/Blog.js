@@ -16,7 +16,7 @@ const Blog = ({ blog, handleLike, deleteBlog }) => {
     return(
       <div style={{ border: '1.5px solid blue' }}>
         <h4 id="title">{blog.title}</h4>
-        <button onClick={() => setVisible(true)}>View</button>        <h4 id="author">Author: {blog.author}</h4>
+        <button id="view" onClick={() => setVisible(true)}>View</button>        <h4 id="author">Author: {blog.author}</h4>
       </div>
     )
   }
