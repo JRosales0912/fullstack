@@ -6,19 +6,19 @@ const BlogForm = ({ title, addBlog, author, url, likes,
       <div>
         <form onSubmit={addBlog}>
           <div>
-          Title: <input value={title}
+          Title: <input id="titleInput" value={title}
               onChange={handleTitleChange}/>
           </div>
           <div>
-          Author: <input value={author}
+          Author: <input id="authorInput" value={author}
               onChange={handleAuthorChange}/>
           </div>
           <div>
-          URL: <input value={url}
+          URL: <input id="urlInput" value={url}
               onChange={handleURLChange}/>
           </div>
           <div>
-          Likes: <input value={likes}
+          Likes: <input id="likesInput" value={likes}
               onChange={handleLikesChange}/>
           </div>
           <div>
