@@ -58,4 +58,14 @@ describe('Blog app', function() {
         
         cy.contains('button','Like').first().click()
     })
+
+    
+    
+    it('A blog can be liked', function() {
+        cy.contains('button','View').first().click()
+        
+        cy.contains('button','Remove').first().click()
+        
+        cy.contains('div','Deleted')
+    })
 })
