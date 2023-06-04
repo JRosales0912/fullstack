@@ -22,7 +22,7 @@ const BlogForm = ({ title, addBlog, author, url, likes,
               onChange={handleLikesChange}/>
           </div>
           <div>
-            <button type="submit" >add</button>
+            <button id="submit" type="submit" >add</button>
           </div>
         </form>
       </div>
