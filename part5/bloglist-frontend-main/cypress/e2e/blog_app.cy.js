@@ -74,4 +74,19 @@ describe('Blog app', function() {
         
         cy.contains('button','Remove').not()
     })
+
+    it('The blogs are ordered', function() {
+        
+        cy.contains('button','View').first().click()
+        cy.get('h5[id="likes"]').then(($value)=>{
+            const textValue = $value.text().split(' ')[1]
+            cy.wrap(textValue).as('wrapValue')
+            cy.contains('button','View').last().click()
+            cy.get('h5[id="likes"]').then(($bvalue)=>{
+                const btextValue = $bvalue.text().split(' ')[1]
+                cy.wrap(btextValue).as('wrapValue')
+                expect(Number(textValue)).to.be.at.least(Number(btextValue))
+            })
+        })
+    })
 })
