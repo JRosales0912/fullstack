@@ -12,7 +12,7 @@ const addBlog = (title, author, likes, url, token) => {
       'Authorization': 'Bearer ' + token
     }
   }
-  const request = axios.post(baseUrl, {title: title, author:author, likes:likes, url:url}, config)
+  const request = axios.post(baseUrl, { title: title, author:author, likes:likes, url:url }, config)
   return request.then(response => response.data)
 }
 
@@ -22,7 +22,7 @@ const likeBlog = (likes, id, token) => {
       'Authorization': 'Bearer ' + token
     }
   }
-  const request = axios.put(baseUrl+'/'+id, {likes:likes}, config)
+  const request = axios.put(baseUrl+'/'+id, { likes:likes }, config)
   return request.then(response => response.data)
 }
 
@@ -36,5 +36,4 @@ const deleteBlog = (id, token) => {
   return request.then(response => response.data)
 }
 
-// eslint-disable-next-line import/no-anonymous-default-export
 export default { getAll, addBlog, likeBlog, deleteBlog }
