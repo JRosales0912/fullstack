@@ -61,11 +61,17 @@ describe('Blog app', function() {
 
     
     
-    it('A blog can be liked', function() {
+    it('A blog can be delted', function() {
         cy.contains('button','View').first().click()
         
         cy.contains('button','Remove').first().click()
         
         cy.contains('div','Deleted')
+    })
+
+    it('A blog can not be deleted', function() {
+        cy.contains('button','View').last().click()
+        
+        cy.contains('button','Remove').not()
     })
 })
