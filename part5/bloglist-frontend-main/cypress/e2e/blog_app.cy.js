@@ -49,7 +49,13 @@ describe('Blog app', function() {
         
         cy.contains('button','add').click()
 
-        
         cy.contains('div','added')
+    })
+
+    
+    it('A blog can be liked', function() {
+        cy.contains('button','View').first().click()
+        
+        cy.contains('button','Like').first().click()
     })
 })
