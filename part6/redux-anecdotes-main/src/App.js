@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from 'react-redux'
-import { createAnecdote as create } from './reducers/anecdoteReducer'
+import { createAnecdote as create, vote } from './reducers/anecdoteReducer'
 
 const App = () => {
   const anecdotes = useSelector(state => state)
@@ -13,12 +13,7 @@ const App = () => {
   }
   const vote = (id) => {
     console.log('vote', id)
-    dispatch({
-      type: 'VOTE',
-      data: {
-        id: id
-      }
-    })
+    dispatch(vote(id))
   }
 
   const cmpVotes = (a, b) => {
