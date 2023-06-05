@@ -11,6 +11,7 @@ const AnecdoteList = (props) => {
             return state.anecdotes.filter(anecdote => anecdote.content.includes(state.filter))
         }   
     })
+    const anecdotesArray = [...anecdotes]
     const dispatch = useDispatch()
   
     const voteAnecdote = (id) => {
@@ -25,7 +26,7 @@ const AnecdoteList = (props) => {
     return (
         <div>
         <h2>Anecdotes</h2>
-        {anecdotes.sort(cmpVotes) && anecdotes.map(anecdote =>
+        {anecdotesArray.sort(cmpVotes) && anecdotes.map(anecdote =>
             <div key={anecdote.id}>
             <div>
                 {anecdote.content}
