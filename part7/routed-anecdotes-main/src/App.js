@@ -1,6 +1,16 @@
 import { useState } from 'react'
-import { Route, Routes, Link } from 'react-router-dom'
+import { Route, Routes, Link, useMatch } from 'react-router-dom'
 
+const Anecdote = ({ anecdote }) => {
+  return (
+    <div>
+      <h2>{anecdote.content} by {anecdote.author}</h2>
+      <p>has {anecdote.votes} votes</p>
+      <p> for more info see <a href={anecdote.info}>{anecdote.info}</a>
+      </p>
+    </div>
+  )
+}
 const Menu = () => {
   const padding = {
     paddingRight: 5
@@ -18,7 +28,11 @@ const AnecdoteList = ({ anecdotes }) => (
   <div>
     <h2>Anecdotes</h2>
     <ul>
-      {anecdotes.map(anecdote => <li key={anecdote.id} >{anecdote.content}</li>)}
+      {anecdotes.map(anecdote => 
+      <li key={anecdote.id}>
+      <Link to={`/anecdotes/${anecdote.id}`}>{anecdote.content}</Link>
+      </li>
+      )}
     </ul>
   </div>
 )
@@ -120,6 +134,8 @@ const App = () => {
   ])
 
   const [notification, setNotification] = useState('')
+  const match = useMatch('/anecdotes/:id')
+
 
   const addNew = (anecdote) => {
     anecdote.id = Math.round(Math.random() * 10000)
@@ -128,6 +144,7 @@ const App = () => {
 
   const anecdoteById = (id) => anecdotes.find((a) => a.id === id)
 
+  const anecdote = match ? anecdoteById(parseInt(match.params.id)) : null
   const vote = (id) => {
     const anecdote = anecdoteById(id)
 
@@ -162,6 +179,10 @@ const App = () => {
         />
         <Route path="/about" element={<About />} />
         <Route path="/create" element={<CreateNew addNew={addNew} />} />
+        <Route
+          path="anecdotes/:id"
+          element={<Anecdote anecdote={anecdote} />}
+        />
       </Routes>
 
       {/* <Menu /> */}
