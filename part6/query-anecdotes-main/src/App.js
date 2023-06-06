@@ -16,6 +16,13 @@ const App = () => {
       queryClient.setQueryData('anecdote', anecdote.concat(newAnecdote))  
     },
   })
+
+  const new1AnecdoteMutation = useMutation(handleVote, {
+    onSuccess: (newAnecdote) => {
+      const anecdote = queryClient.getQueryData('anecdote')      
+      queryClient.setQueryData('anecdote', anecdote.concat(newAnecdote))  
+    },
+  })
  
   const result = useQuery(    
     'anecdotes',    
@@ -29,7 +36,7 @@ const App = () => {
   const anecdotes = result.data
 
   const handleVote = (anecdote) => {
-    console.log('vote')
+    anecdote.votes = anecdote.votes + 1
   }
 
   // const anecdotes = [
