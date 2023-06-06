@@ -1,34 +1,46 @@
 import AnecdoteForm from './components/AnecdoteForm'
 import Notification from './components/Notification'
-import { useQuery } from 'react-query'
+import { useQuery, useMutation, useQueryClient } from 'react-query'
 import axios from 'axios'
+import { getAnecdotes, createAnecdote } from './components/AnecdoteForm'
 
 const App = () => {
+
+  const createAnecdote = newAnecdote =>  
+    axios.post('http://localhost:3001/anecdotes', newAnecdote).then(res => res.data)
+
+  const queryClient = useQueryClient()
+  const newAnecdoteMutation = useMutation(createAnecdote, {
+    onSuccess: (newAnecdote) => {
+      const anecdote = queryClient.getQueryData('anecdote')      
+      queryClient.setQueryData('anecdote', anecdote.concat(newAnecdote))  
+    },
+  })
  
   const result = useQuery(    
-    'notes',    
-    () => axios.get('http://localhost:3001/notes')
+    'anecdotes',    
+    () => axios.get('http://localhost:3001/anecdotes')
     .then(res => res.data)
     .catch(er => false))  
   console.log(result)
   if ( result.isLoading ) {
     return <div>loading data...</div> 
   }
-  const notes = result.data
+  const anecdotes = result.data
 
   const handleVote = (anecdote) => {
     console.log('vote')
   }
 
-  const anecdotes = [
-    {
-      "content": "If it hurts, do it more often",
-      "id": "47145",
-      "votes": 0
-    },
-  ]
+  // const anecdotes = [
+  //   {
+  //     "content": "If it hurts, do it more often",
+  //     "id": "47145",
+  //     "votes": 0
+  //   },
+  // ]
 
-  if(!notes){
+  if(!anecdotes){
     return (
       <div>
         <h3>Anecdote service not available due to problems in the server</h3>
@@ -41,7 +53,7 @@ const App = () => {
       <Notification />
       <AnecdoteForm />
     
-      {result.map(anecdote =>
+      {anecdotes.map(anecdote =>
         <div key={anecdote.id}>
           <div>
             {anecdote.content}
